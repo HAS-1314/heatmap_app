@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatmap App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* 动态背景效果 */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: auto; /* 允许页面滚动 */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh; /* 确保背景覆盖整个页面 */
+        }
+
+        /* 定义背景动画 */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 导航栏样式 */
+        nav {
+            position: relative; /* 改为相对定位 */
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #007bff;
+        }
+
+        /* Flash 消息样式 */
+        .flash-messages {
+            position: relative;
+            z-index: 2;
+            margin: 20px auto;
+            max-width: 600px;
+            max-height: 100px; /* 限制最大高度 */
+            overflow-y: auto; /* 如果消息过多，允许滚动 */
+        }
+
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* 内容区域样式 */
+        .content {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 60px auto 20px; /* 为导航栏留出空间 */
+            max-width: 800px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; /* 允许垂直滚动 */
+            max-height: 80vh; /* 限制最大高度 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <a href="{{ url_for('main_routes.index') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main_routes.profile') }}">Profile</a>
+            <a href="{{ url_for('main_routes.logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('main_routes.login') }}">Login</a>
+            <a href="{{ url_for('main_routes.register') }}">Register</a>
+        {% endif %}
+    </nav>
+
+    <!-- 显示 Flash 消息 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- 内容区域 -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

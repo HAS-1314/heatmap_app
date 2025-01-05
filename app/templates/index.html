@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Heatmap Rankings</h1>
+
+<!-- 显示满足条件的排行榜 -->
+<h2>Top Locations (≥ 10 Ratings)</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Average Score</th>
+            <th>Number of Ratings</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for location, score, num_ratings in location_scores %}
+        <tr>
+            <td>{{ location.name }}</td>  <!-- 访问 location 对象的 name 属性 -->
+            <td>
+                {% if score > 80 %}
+                    <span style="color: red;">{{ score }}</span>
+                    {% set score_int = (score - 80)|int %}  <!-- 将分数差转换为整数 -->
+                    {% set full_hearts = score_int // 2 %}  <!-- 每2分为一个完整心 -->
+                    {% set half_heart = score_int % 2 %}    <!-- 剩余的1分为半个心 -->
+                    {% for _ in range(full_hearts) %}
+                        ❤️  <!-- 完整心 -->
+                    {% endfor %}
+                    {% if half_heart %}
+                        ♡  <!-- 半个心 -->
+                    {% endif %}
+                {% else %}
+                    {{ score }}  <!-- 分数不超过80，直接显示分数 -->
+                {% endif %}
+            </td>
+            <td>{{ num_ratings }}</td>  <!-- 显示参与打分的用户数量 -->
+            <td>
+                <a href="{{ url_for('main_routes.rate', location_id=location.id) }}" class="btn btn-primary">Rate</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- 显示不满足条件的未上榜数据 -->
+<h2>Locations with Fewer Ratings (< 10 Ratings)</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Average Score</th>
+            <th>Number of Ratings</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for location, score, num_ratings in location_scores_below %}
+        <tr>
+            <td>{{ location.name }}</td>  <!-- 访问 location 对象的 name 属性 -->
+            <td>
+                {% if score > 80 %}
+                    <span style="color: red;">{{ score }}</span>
+                    {% set score_int = (score - 80)|int %}  <!-- 将分数差转换为整数 -->
+                    {% set full_hearts = score_int // 2 %}  <!-- 每2分为一个完整心 -->
+                    {% set half_heart = score_int % 2 %}    <!-- 剩余的1分为半个心 -->
+                    {% for _ in range(full_hearts) %}
+                        ❤️  <!-- 完整心 -->
+                    {% endfor %}
+                    {% if half_heart %}
+                        ♡  <!-- 半个心 -->
+                    {% endif %}
+                {% else %}
+                    {{ score }}  <!-- 分数不超过80，直接显示分数 -->
+                {% endif %}
+            </td>
+            <td>{{ num_ratings }}</td>  <!-- 显示参与打分的用户数量 -->
+            <td>
+                <a href="{{ url_for('main_routes.rate', location_id=location.id) }}" class="btn btn-primary">Rate</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

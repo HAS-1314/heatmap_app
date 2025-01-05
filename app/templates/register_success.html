@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>注册成功！</h1>
+<p>即将跳转到登录页面...</p>
+
+<script>
+    // 1 秒后跳转到登录页面
+    setTimeout(function() {
+        window.location.href = "{{ url_for('main_routes.login') }}";
+    }, 1000);  // 1000 毫秒 = 1 秒
+</script>
+{% endblock %}

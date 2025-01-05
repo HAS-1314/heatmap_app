@@ -1,0 +1,14 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Rate {{ location.name }}</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.score.label }}<br>
+        {{ form.score(size=3) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}
